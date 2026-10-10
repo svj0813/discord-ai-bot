@@ -1,0 +1,1 @@
+# Smart Discord Bot - A C++ AI integration project
