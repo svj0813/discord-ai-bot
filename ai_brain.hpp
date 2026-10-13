@@ -2,11 +2,15 @@
 #include <string>
 #include <algorithm>
 #include <sstream>
+#include <chrono>
 
 class AiBrain {
+private:
+    // Record bot startup time when the class initializes
+    inline static const std::chrono::steady_clock::time_point startTime = std::chrono::steady_clock::now();
+
 public:
     static std::string handleCommand(const std::string& content) {
-        // Trim leading spaces just in case
         if (content.empty()) return "";
 
         if (content[0] == '!') {
@@ -22,6 +26,18 @@ public:
                 std::getline(ss, arg);
                 if (!arg.empty() && arg[0] == ' ') arg.erase(0, 1);
                 return arg.empty() ? "Usage: !echo <message>" : arg;
+            }
+            else if (cmd == "!uptime") {
+                auto now = std::chrono::steady_clock::now();
+                auto duration = std::chrono::duration_cast<std::chrono::seconds>(now - startTime).count();
+                
+                long hours = duration / 3600;
+                long minutes = (duration % 3600) / 60;
+                long seconds = duration % 60;
+
+                return "⏳ Uptime: " + std::to_string(hours) + "h " + 
+                       std::to_string(minutes) + "m " + 
+                       std::to_string(seconds) + "s";
             }
         }
         return ""; 
@@ -46,7 +62,7 @@ public:
             return "This bot is modularized with custom C++ headers and the D++ library!";
         }
         else if (lowerMsg.find("help") != std::string::npos) {
-            return "Commands: !ping, !info, !echo <text>. Or just chat with me!";
+            return "Commands: !ping, !info, !echo <text>, !uptime. Or just chat with me!";
         }
         
         return "That's interesting! Tell me more, or type 'help' to see what I can do.";
