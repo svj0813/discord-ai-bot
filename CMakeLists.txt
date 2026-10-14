@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.13)
 project(ShawarmaBot)
 
 # Set C++ 17 standard
@@ -14,8 +14,11 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(dpp)
 
+# Find libcurl package for future AI API requests
+find_package(CURL REQUIRED)
+
 # Build the executable
 add_executable(discord-bot main.cpp)
 
-# Link D++ to my bot executable
-target_link_libraries(discord-bot dpp)
+# Link D++ and CURL libraries
+target_link_libraries(discord-bot PRIVATE dpp CURL::libcurl)

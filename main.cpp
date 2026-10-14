@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include "ai_brain.hpp"
 #include "logger.hpp"
+#include "ai_api.hpp"
 
 int main() {
     const char* token = std::getenv("DISCORD_TOKEN");
@@ -10,6 +11,9 @@ int main() {
         Logger::log("ERROR", "DISCORD_TOKEN is missing!");
         return 1;
     }
+
+    // Initialize CURL for API requests
+    AiApi::init();
 
     dpp::cluster bot(token, dpp::i_default_intents | dpp::i_message_content);
 
@@ -31,5 +35,9 @@ int main() {
 
     Logger::log("INFO", "Starting ShawarmaAi bot...");
     bot.start(dpp::st_wait);
+
+    // Cleanup CURL when bot shuts down
+    AiApi::cleanup();
+
     return 0;
 }
